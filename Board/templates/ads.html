@@ -1,0 +1,86 @@
+{% extends 'flatpages/default.html' %}
+{% load tz %}
+
+{% block title %}
+Ads
+{% endblock title %}
+
+{% block content %}
+    <style>
+        /* CSS стиль для выравнивания текста по центру */
+        .centered-text {
+            text-align: center;
+        }
+    </style>
+{% if user.is_authenticated %}
+   <div class="centered-text">
+       <a href="{% url 'create_ad' %}" class="nav-link" style="font-size: 20px;">Создать объявление</a>
+    </div>
+<div style="text-align: right;">
+    <a href="{% url 'responses' %}" class="nav-link" style="font-size: 20px;">Отклики</a>
+</div>
+{% endif %}
+
+   <hr>
+
+
+
+   {% if ads %}
+       <table>
+           <tr>
+               <td>Заголовок</td>
+               <td>Дата публикации</td>
+               <td>Краткое содержание</td>
+               <td></td>
+           </tr>
+
+
+           {% for ad in ads %}
+           <tr>
+               <td><a href="http://127.0.0.1:8000/ads/{{ ad.id }}">{{ ad.title|capfirst }}</a></td>
+               <td>{{ ad.creation_time|date:'d M Y' }}</td>
+               <td>{{ ad.text|striptags|truncatechars:100 }}</td>
+                <td>
+                    {% if ad.author == request.user %}
+               <a href="http://127.0.0.1:8000/ads/{{ ad.id }}/edit">Редактировать</a>
+                    {% endif %}
+               </td>
+            </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Записей нет!</h2>
+   {% endif %}
+
+    {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+    <div class="centered-text">
+        <h5>Записей на странице: {{ ads|length }}</h5>
+
+    </div>
+{% if user.is_superuser %}
+<div style="text-align: right;">
+    <a href="{% url 'mailing' %}" class="nav-link" style="font-size: 20px;">Новостная рассылка</a>
+</div>
+{% endif %}
+{% endblock content %}

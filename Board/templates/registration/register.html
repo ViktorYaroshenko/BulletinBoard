@@ -1,0 +1,28 @@
+<html>
+
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'ads' %}" class="nav-link">Все объявления</a>
+
+<div style="text-align: right;">
+    <a href="{% url 'login' %}" class="nav-link" style="font-size: 20px;">Уже зарегистрированы? Нажмите, чтобы войти</a>
+</div>
+
+<h1>{{title}}</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+{% for f in form %}
+<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+<div class="form-error">{{ f.errors }}</div>
+{% endfor %}
+
+    <button type="submit">Регистрация</button>
+</form>
+
+{% endblock %}
+
+</html>

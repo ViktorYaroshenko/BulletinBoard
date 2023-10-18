@@ -1,0 +1,39 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Ad
+{% endblock title %}
+
+{% block content %}
+{% if ad.author == request.user %}
+<div style="text-align: right;">
+     <a href="http://127.0.0.1:8000/ads/{{ ad.id }}/edit">Редактировать</a>
+</div>
+{% endif %}
+
+<h1>{{ ad.title }}</h1>
+<p></p>
+<h5>Дата публикации: {{ ad.creation_time|date:'d.M.Y года' }}</h5>
+<p></p>
+<h5>Тип обьявления: {{ ad.type }}</h5>
+<h3>Игрок, сделавший объявление: {{ ad.author }}</h3>
+<h3>Текст объявления: {{ ad.text|safe }}</h3>
+
+
+{% if user != ad.author and user.is_authenticated %}
+<h2 style="text-align: left;">Отклики</h2>
+<p></p>
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.text }}
+    <p></p>
+    <input type="submit" value="Оставить отклик">
+</form>
+
+
+
+{% endif %}
+
+
+{% endblock content %}
